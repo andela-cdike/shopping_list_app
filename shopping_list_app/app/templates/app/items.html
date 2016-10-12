@@ -11,5 +11,16 @@
             </li>
         {% endfor %}
     </ul>
+
+    <div>
+        <h4>Create new shopping list</h4>
+        <form action="{% url 'items' shopping_list_id=shopping_list.id %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <br />
+            <br />
+            <input type="submit" value="Add new Item">
+        </form>
+    </div>
     
 {% endblock %}

@@ -36,3 +36,10 @@ class ShoppingListItemTestSuite(Base):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('milk', response.content)
+
+    def test_create_new_shopping_list_item(self):
+        url = reverse(
+            'items', kwargs={'shopping_list_id': self.shopping_list.id})
+        data = {'name': 'sugar'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
