@@ -18,3 +18,9 @@ class ShoppingListTestSuite(Base):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertIn('Grocery', response.content)
+
+    def test_create_new_shopping_list(self):
+        url = reverse('index')
+        data = {'name': 'Grocery'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 200)

@@ -9,5 +9,15 @@
             <li>{{ shopping_list }}</li>
         {% endfor %}
     </ul>
+
+    <div>
+        <form action="{% url 'index' %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <br />
+            <br />
+            <input type="submit" value="submit">
+        </form>
+    </div>
     
 {% endblock %}
