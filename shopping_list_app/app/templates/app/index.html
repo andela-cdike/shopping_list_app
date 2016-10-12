@@ -2,6 +2,12 @@
 
 {% block main %}
     
-    <h1>Success</h1>
+    <h1>My Shopping List</h1>
+
+    <ul>
+        {% for shopping_list in shopping_lists %}
+            <li>{{ shopping_list }}</li>
+        {% endfor %}
+    </ul>
     
 {% endblock %}
