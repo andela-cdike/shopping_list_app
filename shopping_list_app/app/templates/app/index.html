@@ -6,11 +6,16 @@
 
     <ul>
         {% for shopping_list in shopping_lists %}
-            <li>{{ shopping_list }}</li>
+            <li>
+                <a href="{% url 'items' shopping_list_id=shopping_list.id %}">
+                    {{ shopping_list.name }}
+                </a>
+            </li>
         {% endfor %}
     </ul>
 
     <div>
+        <h4>Create new shopping list</h4>
         <form action="{% url 'index' %}" method="post">
             {% csrf_token %}
             {{ form }}

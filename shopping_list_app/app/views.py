@@ -6,10 +6,11 @@ from django.views.generic import View
 
 
 from app.forms import ShoppingListForm
-from app.models import ShoppingList
+from app.models import ShoppingList, ShoppingListItem
 
 
 class IndexView(LoginRequiredMixin, View):
+    '''View for listing and creating a new shopping list'''
     def get(self, request):
         form = ShoppingListForm()
         shopping_lists = ShoppingList.objects.filter(owner=request.user)
@@ -33,3 +34,18 @@ class IndexView(LoginRequiredMixin, View):
             context.update(csrf(request))
             context.update({'shopping_lists': shopping_lists, 'form': form})
             return render(request, 'app/index.html', context)
+
+
+class ListItemsView(LoginRequiredMixin, View):
+    '''View for listing and creating new items in a shopping list'''
+    def get(self, request, *args, **kwargs):
+        shopping_list_id = kwargs.get('shopping_list_id')
+        shopping_list = ShoppingList.objects.get(id=shopping_list_id)
+        items = ShoppingListItem.objects.filter(shopping_list=shopping_list)
+        context = {}
+        context.update({
+            'shopping_list': shopping_list,
+            'items': items
+        })
+        return render(request, 'app/items.html', context)
+

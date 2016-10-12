@@ -2,13 +2,16 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from app.models import ShoppingList
+from app.models import ShoppingList, ShoppingListItem
 
 
 class Base(TestCase):
     def setUp(self):
         user = User.objects.create_user('admin', 'admin@test.com', 'admin')
-        ShoppingList.objects.create(name='Grocery', owner=user)
+        self.shopping_list = ShoppingList.objects.create(
+            name='Grocery', owner=user)
+        ShoppingListItem.objects.create(
+            name='milk', shopping_list=self.shopping_list)
         self.client = Client()
         self.client.login(username='admin', password='admin')
 
@@ -24,3 +27,12 @@ class ShoppingListTestSuite(Base):
         data = {'name': 'Grocery'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 200)
+
+
+class ShoppingListItemTestSuite(Base):
+    def test_view_shopping_list_items(self):
+        url = reverse(
+            'items', kwargs={'shopping_list_id': self.shopping_list.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('milk', response.content)

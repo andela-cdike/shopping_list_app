@@ -20,3 +20,15 @@ class ShoppingList(Base):
 
     def __unicode__(self):
         return self.name
+
+
+class ShoppingListItem(Base):
+    shopping_list = models.ForeignKey(
+        'ShoppingList', related_name='items', on_delete=models.CASCADE
+    )
+
+    class Meta:
+        ordering = ['name']
+
+    def __unicode__(self):
+        return self.name
