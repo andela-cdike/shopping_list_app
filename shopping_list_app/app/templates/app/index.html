@@ -4,15 +4,26 @@
     
     <h1>My Shopping List</h1>
 
-    <ul>
+    <Table>
+        <thead>
+            <tr>
+                <td>Shopping list</td>
+                <td>Budget (N)</td>
+            </tr>
+        </thead>
         {% for shopping_list in shopping_lists %}
-            <li>
-                <a href="{% url 'items' shopping_list_id=shopping_list.id %}">
-                    {{ shopping_list.name }}
-                </a>
-            </li>
+            <tr>
+                <td>
+                    <a href="{% url 'items' shopping_list_id=shopping_list.id %}">
+                        {{ shopping_list.name }}
+                    </a>
+                </td>
+                <td>
+                    {{ shopping_list.budget }}
+                </td>
+            </tr>
         {% endfor %}
-    </ul>
+    </Table>
 
     <div>
         <h4>Create new shopping list</h4>

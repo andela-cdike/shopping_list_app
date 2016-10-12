@@ -14,6 +14,7 @@ class ShoppingList(Base):
     owner = models.ForeignKey(
         'auth.User', null=True, related_name='shopping_lists'
     )
+    budget = models.IntegerField()
 
     class Meta:
         ordering = ['name']
