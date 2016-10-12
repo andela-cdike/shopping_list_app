@@ -15,12 +15,12 @@ class Base(TestCase):
 
 
 class ShoppingListModelTestSuite(Base):
-    def test_user_model(self):
+    def test_shopping_list_model(self):
         shopping_list = ShoppingList.objects.get(name='Grocery')
         self.assertEqual(str(shopping_list), 'Grocery')
 
 
 class ShoppingListItemModelTestSuite(Base):
-    def test_user_model(self):
-        shopping_list = ShoppingList.objects.get(name='milk')
+    def test_shopping_list_item_model(self):
+        shopping_list = ShoppingListItem.objects.get(name='milk')
         self.assertEqual(str(shopping_list), 'milk')
