@@ -1,39 +1,57 @@
 {% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
 
 {% block main %}
-    
-    <h1>My Shopping List</h1>
+    <main class="col-sm-offset-3 col-sm-6">
+        <section>
+            <h3>My Shopping List</h3>
 
-    <Table>
-        <thead>
-            <tr>
-                <td>Shopping list</td>
-                <td>Budget (N)</td>
-            </tr>
-        </thead>
-        {% for shopping_list in shopping_lists %}
-            <tr>
-                <td>
-                    <a href="{% url 'items' shopping_list_id=shopping_list.id %}">
-                        {{ shopping_list.name }}
-                    </a>
-                </td>
-                <td>
-                    {{ shopping_list.budget }}
-                </td>
-            </tr>
-        {% endfor %}
-    </Table>
-
-    <div>
-        <h4>Create new shopping list</h4>
-        <form action="{% url 'index' %}" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <br />
-            <br />
-            <input type="submit" value="Add new Shopping List">
-        </form>
-    </div>
-    
+            <Table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Shopping list</th>
+                        <th>Budget (N)</th>
+                    </tr>
+                </thead>
+                {% for shopping_list in shopping_lists %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'items' shopping_list_id=shopping_list.id %}">
+                                {{ shopping_list.name }}
+                            </a>
+                        </td>
+                        <td>
+                            {{ shopping_list.budget }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </Table>
+        </section>
+        <hr />
+        <section>
+            <h3>Create new shopping list</h3>
+            <form action="{% url 'index' %}" method="post" class="form-horizontal">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="control-label col-sm-2">
+                            {{ field.label_tag }}
+                        </label>
+                        <div class="col-sm-10">
+                            {% render_field field class+="form-control" %}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">
+                            Add New Shopping List
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </main>
 {% endblock %}

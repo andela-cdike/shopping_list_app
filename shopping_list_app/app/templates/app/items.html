@@ -1,27 +1,46 @@
 {% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
 
 {% block main %}
-    
-    <h1>{{ shopping_list.name }} Items</h1>
-    <h4>Budget: {{ shopping_list.budget }}</h4>
-
-    <ul>
-        {% for item in items %}
-            <li>
-                {{ item.name }}
-            </li>
-        {% endfor %}
-    </ul>
-
-    <div>
-        <h4>Create new shopping list</h4>
-        <form action="{% url 'items' shopping_list_id=shopping_list.id %}" method="post">
-            {% csrf_token %}
-            {{ form }}
+    <main class="col-sm-offset-3 col-sm-6">
+        <section>
+            <h1 class="text-center">{{ shopping_list.name }} Items</h1>
+            <h4 class="text-center">Budget: {{ shopping_list.budget }}</h4>
             <br />
-            <br />
-            <input type="submit" value="Add new Item">
-        </form>
-    </div>
+            <ul class="list-group">
+                {% for item in items %}
+                    <li class="list-group-item">
+                        {{ item.name }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <hr />
+
+        <section>
+            <h4>Create new shopping list</h4>
+            <form action="{% url 'items' shopping_list_id=shopping_list.id %}" method="post" class="form-horizontal">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="control-label col-sm-2">
+                            {{ field.label_tag }}
+                        </label>
+                        <div class="col-sm-10">
+                            {% render_field field class+="form-control" %}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">Add new Item</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </main>
     
 {% endblock %}

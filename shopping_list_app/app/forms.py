@@ -1,16 +1,16 @@
-from django.forms import ModelForm
+from django import forms
 
 from app.models import ShoppingList, ShoppingListItem
 
 
-class ShoppingListForm(ModelForm):
+class ShoppingListForm(forms.ModelForm):
     '''Form for the shopping list model'''
     class Meta:
         model = ShoppingList
         fields = ['name', 'budget']
 
 
-class ShoppingListItemForm(ModelForm):
+class ShoppingListItemForm(forms.ModelForm):
     '''Form for the shopping list model'''
     class Meta:
         model = ShoppingListItem
