@@ -11,7 +11,7 @@ class Base(TestCase):
         self.shopping_list = ShoppingList.objects.create(
             name='Grocery', owner=user, budget=400)
         self.item = ShoppingListItem.objects.create(
-            name='milk', shopping_list=self.shopping_list)
+            name='milk', shopping_list=self.shopping_list, price=50)
         self.client = Client()
         self.client.login(username='admin', password='admin')
 
@@ -35,12 +35,13 @@ class ShoppingListItemTestSuite(Base):
             'items', kwargs={'shopping_list_id': self.shopping_list.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('milk', response.content)
+        self.assertIn(self.item.name, response.content)
+        self.assertIn(self.item.price, response.content)
 
     def test_create_new_shopping_list_item(self):
         url = reverse(
             'items', kwargs={'shopping_list_id': self.shopping_list.id})
-        data = {'name': 'sugar'}
+        data = {'name': 'sugar', 'price': 20}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 302)
 

@@ -4,6 +4,7 @@ from django.shortcuts import HttpResponseRedirect, render
 from django.template.context_processors import csrf
 from django.urls import reverse
 from django.views.generic import View
+from django.views.generic.edit import UpdateView
 
 
 from app.forms import ShoppingListForm, ShoppingListItemForm
@@ -99,17 +100,17 @@ class ListItemsView(LoginRequiredMixin, View):
             return render(request, 'app/items.html', context)
 
 
-class ItemRenameView(View):
-    '''View for renaming a shopping list item'''
+class ItemEditView(View):
+    '''View for editing a shopping list item'''
 
     def get(self, request, *args, **kwargs):
-        '''Returns a form to the user where item can be renamed'''
+        '''Returns a form to the user where item can be edited'''
         id = kwargs.get('id')
         item = ShoppingListItem.objects.get(pk=id)
         form = ShoppingListItemForm(instance=item)
         context = {}
         context.update(csrf(request))
-        context.update({'form': form, 'id': id})
+        context.update({'form': form, 'item_id': id})
         return render(request, 'app/edit-item.html', context)
 
     def post(self, request, *args, **kwargs):
@@ -120,10 +121,8 @@ class ItemRenameView(View):
         '''
         id = kwargs.get('id')
         item = ShoppingListItem.objects.get(pk=id)
-        form = ShoppingListItemForm(data=request.POST)
-
+        form = ShoppingListItemForm(data=request.POST, instance=item)
         if form.is_valid():
-            item.name = form.data['name']
             item.save()
             return HttpResponseRedirect(
                 reverse('items',
@@ -137,7 +136,7 @@ class ItemRenameView(View):
 
             context = {}
             context.update(csrf(request))
-            context.updat({
+            context.update({
                 'form': form
             })
         return render(request, 'app/edit-item.html', context)

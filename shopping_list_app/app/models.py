@@ -27,6 +27,7 @@ class ShoppingListItem(Base):
     shopping_list = models.ForeignKey(
         'ShoppingList', related_name='items', on_delete=models.CASCADE
     )
+    price = models.IntegerField()
 
     class Meta:
         ordering = ['name']

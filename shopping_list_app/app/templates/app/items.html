@@ -2,6 +2,9 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{% block navbar %}
+    {% include "app/nav-snippet.html" %}
+{% endblock %}
 
 {% block main %}
     <main class="col-sm-offset-3 col-sm-6">
@@ -11,21 +14,28 @@
             <h1 class="text-center">{{ shopping_list.name }} Items</h1>
             <h4 class="text-center">Budget: {{ shopping_list.budget }}</h4>
             <br />
-            <ul class="list-group">
+            <Table class="table table-striped item-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
                 {% for item in items %}
-                    <li class="list-group-item">
-                        {{ item.name }}
-                        <span style="float: right;">
-                            <a class="btn btn-link btn-sm" href="{% url 'rename-item' id=item.id %}">
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>
+                            <a class="btn btn-link btn-sm" href="{% url 'edit-item' id=item.id %}">
                                 Edit
                             </a>
                             <a class="btn btn-link btn-sm" href="{% url 'delete-item' id=item.id %}">
                                 Delete
                             </a>
-                        </span>
-                    </li>
+                        </td>
+                    </tr>
                 {% endfor %}
-            </ul>
+            </Table>
         </section>
 
         <!-- Enter new item form -->

@@ -1,3 +1,11 @@
 .panel {
     margin-top: 25%;
 }
+
+.item-table {
+    text-align: center;
+}
+
+.item-table th{
+    text-align: center;
+}
