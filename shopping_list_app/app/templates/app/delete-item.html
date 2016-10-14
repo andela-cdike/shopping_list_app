@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block main %}
+
+    <main class="col-sm-offset-3 col-sm-6">
+        <section>
+            <div class="panel panel-default">
+                <div class="panel-heading">Delete Item</div>
+                <div class="panel-body">
+                    <form action="{% url 'delete-item' id=item.id %}" method="post">
+                        {% csrf_token %}
+                        <p class="text-warning">Are you sure you want to delete <strong>{{ item.name|upper }}</strong>?</p>
+                        <button class="btn btn-default" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

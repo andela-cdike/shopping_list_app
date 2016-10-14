@@ -5,6 +5,8 @@
 
 {% block main %}
     <main class="col-sm-offset-3 col-sm-6">
+
+        <!-- List of items in shopping list -->
         <section>
             <h1 class="text-center">{{ shopping_list.name }} Items</h1>
             <h4 class="text-center">Budget: {{ shopping_list.budget }}</h4>
@@ -13,13 +15,20 @@
                 {% for item in items %}
                     <li class="list-group-item">
                         {{ item.name }}
+                        <span style="float: right;">
+                            <a class="btn btn-link btn-sm" href="{% url 'rename-item' id=item.id %}">
+                                Edit
+                            </a>
+                            <a class="btn btn-link btn-sm" href="{% url 'delete-item' id=item.id %}">
+                                Delete
+                            </a>
+                        </span>
                     </li>
                 {% endfor %}
             </ul>
         </section>
 
-        <hr />
-
+        <!-- Enter new item form -->
         <section>
             <h4>Create new shopping list</h4>
             <form action="{% url 'items' shopping_list_id=shopping_list.id %}" method="post" class="form-horizontal">

@@ -10,7 +10,7 @@ class Base(TestCase):
         user = User.objects.create_user('admin', 'admin@test.com', 'admin')
         self.shopping_list = ShoppingList.objects.create(
             name='Grocery', owner=user, budget=400)
-        ShoppingListItem.objects.create(
+        self.item = ShoppingListItem.objects.create(
             name='milk', shopping_list=self.shopping_list)
         self.client = Client()
         self.client.login(username='admin', password='admin')
@@ -40,6 +40,35 @@ class ShoppingListItemTestSuite(Base):
     def test_create_new_shopping_list_item(self):
         url = reverse(
             'items', kwargs={'shopping_list_id': self.shopping_list.id})
-        data = {'name': 'sugar', 'budget': 400}
+        data = {'name': 'sugar'}
         response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+
+    def test_edit_shopping_list_item_route(self):
+        url = reverse(
+            'rename-item', kwargs={'id': self.item.id}
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_shopping_list_item_name(self):
+        url = reverse(
+            'rename-item', kwargs={'id': self.item.id}
+        )
+        data = {'name': 'Sugar'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+
+    def test_delete_shopping_list_item_route(self):
+        url = reverse(
+            'delete-item', kwargs={'id': self.item.id}
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_shopping_list_item_name(self):
+        url = reverse(
+            'delete-item', kwargs={'id': self.item.id}
+        )
+        response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
