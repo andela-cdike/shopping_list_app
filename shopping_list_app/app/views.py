@@ -100,6 +100,48 @@ class ListItemsView(LoginRequiredMixin, View):
             return render(request, 'app/items.html', context)
 
 
+class ShoppingListEditView(View):
+    '''View for editing a shopping list'''
+
+    def get(self, request, *args, **kwargs):
+        '''Returns a form to the user where shopping list can be edited'''
+        id = kwargs.get('id')
+        shopping_list = ShoppingList.objects.get(pk=id)
+        form = ShoppingListForm(instance=shopping_list)
+        context = {}
+        context.update(csrf(request))
+        context.update({
+            'form': form, 'id': id, 'url_name': 'edit-shopping-list'
+        })
+        return render(request, 'app/edit-item.html', context)
+
+    def post(self, request, *args, **kwargs):
+        '''Handles post requests to view
+
+        Args:
+            id -- shopping list id
+        '''
+        id = kwargs.get('id')
+        shopping_list = ShoppingList.objects.get(pk=id)
+        form = ShoppingListForm(data=request.POST, instance=shopping_list)
+        if form.is_valid():
+            shopping_list.save()
+            return HttpResponseRedirect(reverse('index'))
+
+        else:
+            for key in form.errors:
+                for error in form.errors[key]:
+                    messages.add_message(request, messages.INFO, error)
+
+            context = {}
+            context.update(csrf(request))
+            context.update({
+                'form': form, 'id': id,
+                'url_name': 'edit-shopping-list'
+            })
+        return render(request, 'app/edit-item.html', context)
+
+
 class ItemEditView(View):
     '''View for editing a shopping list item'''
 
@@ -110,7 +152,10 @@ class ItemEditView(View):
         form = ShoppingListItemForm(instance=item)
         context = {}
         context.update(csrf(request))
-        context.update({'form': form, 'item_id': id})
+        context.update({
+            'form': form, 'id': id,
+            'url_name': 'edit-shopping-list'
+        })
         return render(request, 'app/edit-item.html', context)
 
     def post(self, request, *args, **kwargs):
@@ -137,7 +182,8 @@ class ItemEditView(View):
             context = {}
             context.update(csrf(request))
             context.update({
-                'form': form
+                'form': form, 'id': id,
+                'url_name': 'edit-shopping-list'
             })
         return render(request, 'app/edit-item.html', context)
 

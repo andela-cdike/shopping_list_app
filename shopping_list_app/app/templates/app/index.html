@@ -28,6 +28,11 @@
                         <td>
                             {{ shopping_list.budget }}
                         </td>
+                        <td>
+                            <a class="btn btn-link btn-sm" href="{% url 'edit-shopping-list' id=shopping_list.id %}">
+                                Edit
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
             </Table>

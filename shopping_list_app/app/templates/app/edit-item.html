@@ -10,7 +10,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Edit Item</div>
                 <div class="panel-body">
-                    <form action="{% url 'edit-item' id=item_id %}" method="post" class="form-horizontal">
+                    <form action="{% url url_name id=id %}" method="post" class="form-horizontal">
                         {% csrf_token %}
                         {% for field in form %}
                             <div class="form-group">
