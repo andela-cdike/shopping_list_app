@@ -2,9 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import HttpResponseRedirect, render
 from django.template.context_processors import csrf
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import View
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import DeleteView
 
 
 from app.forms import ShoppingListForm, ShoppingListItemForm
@@ -142,6 +142,21 @@ class ShoppingListEditView(View):
         return render(request, 'app/edit-item.html', context)
 
 
+class ShoppingListDeleteView(DeleteView):
+    '''View for renaming a shopping list item'''
+    model = ShoppingList
+    success_url = reverse_lazy('index')
+    pk_url_kwarg = 'id'
+    template_name = 'app/delete-item.html'
+    context_object_name = 'item'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ShoppingListDeleteView, self).get_context_data(**kwargs)
+        context['url_name'] = 'delete-shopping-list'
+        return context
+
+
 class ItemEditView(View):
     '''View for editing a shopping list item'''
 
@@ -196,7 +211,7 @@ class ItemDeleteView(View):
         item = ShoppingListItem.objects.get(pk=id)
         context = {}
         context.update(csrf(request))
-        context.update({'item': item})
+        context.update({'item': item, 'url_name': 'delete-item'})
         return render(request, 'app/delete-item.html', context)
 
     def post(self, request, *args, **kwargs):

@@ -45,6 +45,23 @@ class ShoppingListTestSuite(Base):
         self.assertEqual(item.name, data['name'])
         self.assertEqual(item.budget, data['budget'])
 
+    def test_delete_shopping_list_route(self):
+        url = reverse(
+            'delete-shopping-list', kwargs={'id': self.shopping_list.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_shopping_list(self):
+        url = reverse(
+            'delete-shopping-list', kwargs={'id': self.shopping_list.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRaises(
+            ShoppingList.DoesNotExist,
+            ShoppingList.objects.get,
+            pk=self.shopping_list.id
+        )
+
 
 class ShoppingListItemTestSuite(Base):
     def test_view_shopping_list_items(self):
@@ -81,7 +98,6 @@ class ShoppingListItemTestSuite(Base):
         self.assertEqual(item.name, data['name'])
         self.assertEqual(item.price, data['price'])
 
-        
     def test_delete_shopping_list_item_route(self):
         url = reverse(
             'delete-item', kwargs={'id': self.item.id}

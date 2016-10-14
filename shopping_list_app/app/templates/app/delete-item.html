@@ -10,7 +10,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Delete Item</div>
                 <div class="panel-body">
-                    <form action="{% url 'delete-item' id=item.id %}" method="post">
+                    <form action="{% url url_name id=item.id %}" method="post">
                         {% csrf_token %}
                         <p class="text-warning">Are you sure you want to delete <strong>{{ item.name|upper }}</strong>?</p>
                         <button class="btn btn-default" type="submit">Submit</button>

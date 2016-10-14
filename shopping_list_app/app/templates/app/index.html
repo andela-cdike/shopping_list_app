@@ -32,6 +32,9 @@
                             <a class="btn btn-link btn-sm" href="{% url 'edit-shopping-list' id=shopping_list.id %}">
                                 Edit
                             </a>
+                            <a class="btn btn-link btn-sm" href="{% url 'delete-shopping-list' id=shopping_list.id %}">
+                                Delete
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}
