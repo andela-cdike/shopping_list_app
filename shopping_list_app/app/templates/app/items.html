@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load static %}
-{% load widget_tweaks %}
 
 {% block navbar %}
     {% include "app/nav-snippet.html" %}
@@ -19,12 +18,24 @@
                     <tr>
                         <th>Name</th>
                         <th>Price</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 {% for item in items %}
                     <tr>
                         <td>{{ item.name }}</td>
                         <td>{{ item.price }}</td>
+                        <td>
+                            {% if item.bought %}
+                                <a>
+                                    <span class="glyphicon glyphicon-check"></span>
+                                </a>
+                            {% else %}
+                                <a>
+                                  <span class="glyphicon glyphicon-unchecked"></span>
+                                </a>
+                            {% endif %}
+                        </td>
                         <td>
                             <a class="btn btn-link btn-sm" href="{% url 'edit-item' id=item.id %}">
                                 Edit
@@ -38,26 +49,11 @@
             </Table>
         </section>
 
-        <!-- Enter new item form -->
+        <hr />
         <section>
-            <h4>Create new shopping list</h4>
-            <form action="{% url 'items' shopping_list_id=shopping_list.id %}" method="post" class="form-horizontal">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="form-group">
-                        <label for="{{ field.id_for_label }}" class="control-label col-sm-2">
-                            {{ field.label_tag }}
-                        </label>
-                        <div class="col-sm-10">
-                            {% render_field field class+="form-control" %}
-                        </div>
-                    </div>
-                {% endfor %}
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default">Add new Item</button>
-                    </div>
-                </div>
+            <h3 class="text-capitalize">create new shopping list item</h3>
+            <form action="{% url 'create-item' shopping_list_id=shopping_list.id %}" method="post" class="form-horizontal">
+                {% include "app/create-item-snippet.html" %}
             </form>
         </section>
     </main>

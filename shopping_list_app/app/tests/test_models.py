@@ -11,7 +11,7 @@ class Base(TestCase):
         shopping_list = ShoppingList.objects.create(
             name='Grocery', owner=user, budget=400)
         ShoppingListItem.objects.create(
-            name='milk', shopping_list=shopping_list)
+            name='milk', shopping_list=shopping_list, bought=False)
 
 
 class ShoppingListModelTestSuite(Base):

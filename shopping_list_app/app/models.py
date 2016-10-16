@@ -28,6 +28,7 @@ class ShoppingListItem(Base):
         'ShoppingList', related_name='items', on_delete=models.CASCADE
     )
     price = models.IntegerField()
+    bought = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['name']
