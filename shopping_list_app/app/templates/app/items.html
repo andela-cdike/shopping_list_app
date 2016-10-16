@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block navbar %}
-    {% include "app/nav-snippet.html" %}
+    {% include "app/nav-snippet.html" with show_search=True %}
 {% endblock %}
 
 {% block main %}
@@ -10,14 +10,28 @@
 
         <!-- List of items in shopping list -->
         <section>
+
+            <!-- Display messages -->
+            {% if messages %}
+                <ul class="list-group">
+                    {% for message in messages %}
+                        {% autoescape off %}
+                            <li class="list-group-item list-group-item-{{ message.tags|default:"danger" }}">
+                                {{ message }}
+                            </li>
+                        {% endautoescape %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
             <h1 class="text-center">{{ shopping_list.name }} Items</h1>
-            <h4 class="text-center">Budget: {{ shopping_list.budget }}</h4>
+            <h4 class="text-center">Budget: &#x20A6;{{ shopping_list.budget }}</h4>
             <br />
             <Table class="table table-striped item-table">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Price</th>
+                        <th>Price (&#x20A6;)</th>
                         <th>Status</th>
                     </tr>
                 </thead>

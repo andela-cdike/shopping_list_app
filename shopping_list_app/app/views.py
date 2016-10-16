@@ -1,4 +1,4 @@
-from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import HttpResponseRedirect, render
 from django.template.context_processors import csrf
@@ -88,6 +88,11 @@ class ListItemsView(LoginRequiredMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        '''
+        Add parent shopping list and form to context
+        If an item is marked as bought, its info should be added to
+        context
+        '''
         context = super(
             ListItemsView, self).get_context_data(**kwargs)
         shopping_list_id = self.kwargs['shopping_list_id']
@@ -117,7 +122,7 @@ class ShoppingListItemCreateView(LoginRequiredMixin, CreateView):
         return super(ShoppingListItemCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
-        '''Add parent shopping list to context'''
+        '''Add parent shopping list and children to context'''
         context = super(
             ShoppingListItemCreateView, self).get_context_data(**kwargs)
         shopping_list_id = self.kwargs['shopping_list_id']
@@ -127,7 +132,9 @@ class ShoppingListItemCreateView(LoginRequiredMixin, CreateView):
             pk=shopping_list_id)
         return context
 
-class ShoppingListItemEditView(LoginRequiredMixin, UpdateView):
+
+class ShoppingListItemEditView(
+        LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     '''View for editing a shopping list item'''
     context_object_name = 'item'
     model = ShoppingListItem
@@ -147,6 +154,20 @@ class ShoppingListItemEditView(LoginRequiredMixin, UpdateView):
             ShoppingListItemEditView, self).get_context_data(**kwargs)
         context['url_name'] = 'edit-item'
         return context
+
+    def get_success_message(self, cleaned_data):
+        success_message = ("You have spent &#x20A6;{0} of your overall "
+            "budget on <strong>{1}</strong>. Your budget for "
+            "<strong>{2}</strong> has decreased from "
+            "&#x20A6;{3} to &#x20A6;{4}."
+        ).format(
+            self.object.price,
+            self.object.name.capitalize(),
+            self.object.shopping_list.name.capitalize(),
+            self.object.shopping_list.budget + self.object.price,
+            self.object.shopping_list.budget)
+
+        return success_message
 
 
 class ShoppingListItemDeleteView(LoginRequiredMixin, DeleteView):
