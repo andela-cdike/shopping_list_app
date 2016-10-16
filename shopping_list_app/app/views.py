@@ -1,9 +1,10 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.shortcuts import HttpResponseRedirect, render
 from django.template.context_processors import csrf
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, View
+from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 
@@ -97,6 +98,38 @@ class ListItemsView(LoginRequiredMixin, ListView):
             ListItemsView, self).get_context_data(**kwargs)
         shopping_list_id = self.kwargs['shopping_list_id']
         context['form'] = ShoppingListItemForm()
+        context['shopping_list'] = ShoppingList.objects.get(
+            pk=shopping_list_id)
+        return context
+
+
+class ShoppingListItemSearchView(LoginRequiredMixin, ListView):
+    '''View for listing search items result'''
+    model = ShoppingListItem
+    template_name = 'app/items.html'
+    context_object_name = 'items'
+
+    def get_queryset(self):
+        '''Return items that match query'''
+        queryset = super(
+            ShoppingListItemSearchView, self).get_queryset()
+        shopping_list_id = self.kwargs['shopping_list_id']
+        query = self.request.GET.get('q', '')
+        digit_query = int(query) if query.isdigit() else None
+        queryset = queryset.filter(shopping_list=shopping_list_id).filter(
+            Q(name__icontains=query) | Q(price=digit_query)
+        )
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        '''
+        Add parent shopping list and form to context
+        If an item is marked as bought, its info should be added to
+        context
+        '''
+        context = super(
+            ShoppingListItemSearchView, self).get_context_data(**kwargs)
+        shopping_list_id = self.kwargs['shopping_list_id']
         context['shopping_list'] = ShoppingList.objects.get(
             pk=shopping_list_id)
         return context

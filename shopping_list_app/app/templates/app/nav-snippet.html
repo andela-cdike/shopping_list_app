@@ -10,8 +10,14 @@
     </ul>
     {% if show_search %}
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <li>
+                <form action="{% url 'search-items' shopping_list_id=shopping_list.id %}" method="get" class="form-inline">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search shopping list item" name="q" id="search-bar" />
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+            </li>
         </ul>
     {% endif %}
   </div>

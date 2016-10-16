@@ -18,5 +18,7 @@ urlpatterns = [
     url(r'^item/edit/(?P<id>[0-9]+)$',
         views.ShoppingListItemEditView.as_view(), name='edit-item'),
     url(r'^item/delete/(?P<id>[0-9]+)$',
-        views.ShoppingListItemDeleteView.as_view(), name='delete-item')
+        views.ShoppingListItemDeleteView.as_view(), name='delete-item'),
+    url(r'^items/search/(?P<shopping_list_id>[0-9]+)$',
+        views.ShoppingListItemSearchView.as_view(), name='search-items')
 ]

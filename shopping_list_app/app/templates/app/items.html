@@ -24,7 +24,7 @@
                 </ul>
             {% endif %}
 
-            <h1 class="text-center">{{ shopping_list.name }} Items</h1>
+            <h1 class="text-center">{{ shopping_list.name|capfirst }} Items</h1>
             <h4 class="text-center">Budget: &#x20A6;{{ shopping_list.budget }}</h4>
             <br />
             <Table class="table table-striped item-table">
@@ -37,7 +37,7 @@
                 </thead>
                 {% for item in items %}
                     <tr>
-                        <td>{{ item.name }}</td>
+                        <td>{{ item.name|capfirst }}</td>
                         <td>{{ item.price }}</td>
                         <td>
                             {% if item.bought %}
@@ -63,13 +63,15 @@
             </Table>
         </section>
 
-        <hr />
-        <section>
-            <h3 class="text-capitalize">create new shopping list item</h3>
-            <form action="{% url 'create-item' shopping_list_id=shopping_list.id %}" method="post" class="form-horizontal">
-                {% include "app/create-item-snippet.html" %}
-            </form>
-        </section>
+        {% if form %}
+            <hr />
+            <section>
+                <h3 class="text-capitalize">create new shopping list item</h3>
+                <form action="{% url 'create-item' shopping_list_id=shopping_list.id %}" method="post" class="form-horizontal">
+                    {% include "app/create-item-snippet.html" %}
+                </form>
+            </section>
+        {% endif %}
     </main>
     
 {% endblock %}
