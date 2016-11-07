@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load widget_tweaks %}
 
 
@@ -10,6 +11,12 @@
             <div class="panel-body">
                 <form action="{% url 'login' %}" method="post" class="form-horizontal">
                     {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
                     {% for field in form %}
                         <div class="form-group">
                             <label for="{{ field.id_for_label }}" class="control-label col-sm-2">
