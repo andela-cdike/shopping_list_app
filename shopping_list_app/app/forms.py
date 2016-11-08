@@ -7,7 +7,7 @@ class ShoppingListForm(forms.ModelForm):
     '''Form for the shopping list model'''
     class Meta:
         model = ShoppingList
-        fields = ['name', 'budget']
+        fields = ['name', 'budget', 'warning_price']
 
 
 class ShoppingListItemForm(forms.ModelForm):

@@ -8,6 +8,15 @@
 {% block main %}
     <main class="col-sm-offset-3 col-sm-6">
 
+        {% if shopping_list.budget < shopping_list.warning_price %}
+            <!-- Warn user if he is running out of cash on a shopping list -->
+            <section>
+                <div class="alert alert-warning">
+                    <strong>Warning!</strong> You are running out of cash. You need to refill your budget if you intend to continue shopping
+                </div>
+            </section>
+        {% endif %}
+
         <!-- List of items in shopping list -->
         <section>
 

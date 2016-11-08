@@ -15,6 +15,7 @@ class ShoppingList(Base):
         'auth.User', null=True, related_name='shopping_lists'
     )
     budget = models.IntegerField()
+    warning_price = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['name']

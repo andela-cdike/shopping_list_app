@@ -9,7 +9,11 @@ class Base(TestCase):
     def setUp(self):
         user = User.objects.create_user('admin', 'admin@test.com', 'admin')
         self.shopping_list = ShoppingList.objects.create(
-            name='Grocery', owner=user, budget=400)
+            name='Grocery',
+            owner=user,
+            budget=400,
+            warning_price=50,
+        )
         self.item = ShoppingListItem.objects.create(
             name='milk',
             shopping_list=self.shopping_list,
@@ -28,7 +32,7 @@ class ShoppingListTestSuite(Base):
 
     def test_create_new_shopping_list(self):
         url = reverse('create-shopping-list')
-        data = {'name': 'Grocery', 'budget': 400}
+        data = {'name': 'Grocery', 'budget': 400, 'warning_price': 100}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 200)
 
@@ -41,7 +45,7 @@ class ShoppingListTestSuite(Base):
     def test_edit_shopping_list(self):
         url = reverse(
             'edit-shopping-list', kwargs={'id': self.shopping_list.id})
-        data = {'name': 'Luxury', 'budget': 20000000}
+        data = {'name': 'Luxury', 'budget': 20000000, 'warning_price': 1000000}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 302)
 
@@ -65,6 +69,22 @@ class ShoppingListTestSuite(Base):
             ShoppingList.objects.get,
             pk=self.shopping_list.id
         )
+
+    def test_warning_is_not_displayed_if_warning_price_is_not_reached(self):
+        url = reverse(
+            'list-items', kwargs={'shopping_list_id': self.shopping_list.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('You are running out of cash.', response.content)
+
+    def test_warn_user_if_shopping_list_warning_price_is_reached(self):
+        self.shopping_list.budget = 45
+        self.shopping_list.save()
+        url = reverse(
+            'list-items', kwargs={'shopping_list_id': self.shopping_list.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('You are running out of cash.', response.content)
 
 
 class ShoppingListItemTestSuite(Base):
