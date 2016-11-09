@@ -98,6 +98,15 @@ class ListItemsView(LoginRequiredMixin, ListView):
         context['form'] = ShoppingListItemForm()
         context['shopping_list'] = ShoppingList.objects.get(
             pk=shopping_list_id)
+
+        # Add balance information to context if balance exceeds budget
+        if context['shopping_list'].balance > context['shopping_list'].budget:
+            context['extra_warning_message'] = (
+                "You need to refill your budget by &#x20A6;{0} to purchase "
+                "all remaining unbought items."
+            ).format(context['shopping_list'].balance -
+                     context['shopping_list'].budget)
+
         return context
 
 
@@ -187,7 +196,8 @@ class ShoppingListItemEditView(
         return context
 
     def get_success_message(self, cleaned_data):
-        success_message = ("You have spent &#x20A6;{0} of your overall "
+        success_message = (
+            "You have spent &#x20A6;{0} of your overall "
             "budget on <strong>{1}</strong>. Your budget for "
             "<strong>{2}</strong> has decreased from "
             "&#x20A6;{3} to &#x20A6;{4}."

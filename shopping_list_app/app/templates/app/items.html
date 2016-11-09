@@ -12,7 +12,7 @@
             <!-- Warn user if he is running out of cash on a shopping list -->
             <section>
                 <div class="alert alert-warning">
-                    <strong>Warning!</strong> You are running out of cash. You need to refill your budget if you intend to continue shopping
+                    <strong>Warning!</strong> You are running out of cash. {{ extra_warning_message|safe }}
                 </div>
             </section>
         {% endif %}
@@ -35,6 +35,7 @@
 
             <h1 class="text-center">{{ shopping_list.name|capfirst }} Items</h1>
             <h4 class="text-center">Budget: &#x20A6;{{ shopping_list.budget }}</h4>
+            <h4 class="text-center">Balance: &#x20A6;{{ shopping_list.balance }}</h4>
             <br />
             <Table class="table table-striped item-table">
                 <thead>

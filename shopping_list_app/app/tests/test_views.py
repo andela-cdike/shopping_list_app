@@ -80,11 +80,15 @@ class ShoppingListTestSuite(Base):
     def test_warn_user_if_shopping_list_warning_price_is_reached(self):
         self.shopping_list.budget = 45
         self.shopping_list.save()
+        expected_warning_msg = (
+            "You are running out of cash. You need to refill your budget"
+            " by &#x20A6;5 to purchase all remaining unbought items."
+        )
         url = reverse(
             'list-items', kwargs={'shopping_list_id': self.shopping_list.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('You are running out of cash.', response.content)
+        self.assertIn(expected_warning_msg, response.content)
 
 
 class ShoppingListItemTestSuite(Base):

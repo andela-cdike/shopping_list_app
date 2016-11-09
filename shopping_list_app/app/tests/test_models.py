@@ -8,11 +8,15 @@ class Base(TestCase):
     '''Abstracts setup'''
     def setUp(self):
         user = User.objects.create_user('admin', 'admin@test.com', 'admin')
-        shopping_list = ShoppingList.objects.create(
+        self.shopping_list = ShoppingList.objects.create(
             name='Grocery', owner=user, budget=400, warning_price=50,
         )
-        ShoppingListItem.objects.create(
-            name='milk', shopping_list=shopping_list, price=200, bought=False)
+        self.shopping_list_item = ShoppingListItem.objects.create(
+            name='milk',
+            shopping_list=self.shopping_list,
+            price=200,
+            bought=False
+        )
 
 
 class ShoppingListModelTestSuite(Base):
@@ -22,6 +26,14 @@ class ShoppingListModelTestSuite(Base):
         self.assertIsInstance(shopping_list.owner, User)
         self.assertEqual(type(shopping_list.budget), int)
         self.assertEqual(type(shopping_list.warning_price), int)
+        self.assertEqual(type(shopping_list.balance), int)
+
+    def test_unbought_items_balance_is_calculated_accurately(self):
+        self.assertEqual(self.shopping_list.balance,
+                         self.shopping_list.items.all()[0].price)
+        self.shopping_list_item.bought = True
+        self.shopping_list_item.save()
+        self.assertEqual(self.shopping_list.balance, 0)
 
 
 class ShoppingListItemModelTestSuite(Base):
