@@ -1,11 +1,13 @@
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.http.response import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-
+from app.customExceptions import BudgetExceeded
 from app.forms import ShoppingListForm, ShoppingListItemForm
 from app.models import ShoppingList, ShoppingListItem
 
@@ -207,8 +209,29 @@ class ShoppingListItemEditView(
             self.object.shopping_list.name.capitalize(),
             self.object.shopping_list.budget + self.object.price,
             self.object.shopping_list.budget)
-
         return success_message
+
+    def post(self, request, *args, **kwargs):
+        '''Catch errors due to Exceeding budget and present friendly
+        message to users
+        '''
+        try:
+            return super(ShoppingListItemEditView, self).post(
+                request, *args, **kwargs)
+        except BudgetExceeded as e:
+            error_message = (
+                "<strong>Error!</strong> "
+                "You do not have sufficient funds to purchase this item. "
+                "Refill your budget with  &#x20A6;{0} to purchase."
+            ).format(e.outstanding_balance)
+            messages.add_message(request, messages.ERROR, error_message)
+
+            return HttpResponseRedirect(
+                reverse(
+                    'list-items',
+                    kwargs={'shopping_list_id': e.shopping_list_id}
+                )
+            )
 
 
 class ShoppingListItemDeleteView(LoginRequiredMixin, DeleteView):

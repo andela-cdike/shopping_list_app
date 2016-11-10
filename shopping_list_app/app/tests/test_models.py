@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
+from app.customExceptions import BudgetExceeded
 from app.models import ShoppingList, ShoppingListItem
 
 
@@ -40,3 +41,11 @@ class ShoppingListItemModelTestSuite(Base):
     def test_shopping_list_item_model(self):
         shopping_list_item = ShoppingListItem.objects.get(name='milk')
         self.assertEqual(str(shopping_list_item), 'milk')
+
+    def test_user_cannot_spend_more_than_budget(self):
+        self.shopping_list_item.price = 1000
+        self.shopping_list_item.bought = True
+        self.assertRaises(
+            BudgetExceeded,
+            self.shopping_list_item.save
+        )

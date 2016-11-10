@@ -127,6 +127,21 @@ class ShoppingListItemTestSuite(Base):
         self.assertEqual(item.price, data['price'])
         self.assertEqual(item.bought, data['bought'])
 
+    def test_warned_when_attempts_to_spend_more_than_budget(self):
+        url = reverse(
+            'edit-item', kwargs={'id': self.item.id}
+        )
+        data = {'name': 'Milk', 'price': 1000, 'bought': True}
+        response = self.client.post(url, data)
+        error_message = (
+            "<strong>Error!</strong> "
+            "You do not have sufficient funds to purchase this item. "
+            "Refill your budget with  &#x20A6;{0} to purchase."
+        ).format(data['price'] - self.shopping_list.budget)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(error_message, response.cookies.get('messages').value)
+
     def test_delete_shopping_list_item_route(self):
         url = reverse(
             'delete-item', kwargs={'id': self.item.id}
